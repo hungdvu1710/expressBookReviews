@@ -22,35 +22,47 @@ public_users.post("/register", (req,res) => {
 });
 
 // Get the book list available in the shop
-public_users.get('/',function (req, res) {
+public_users.get('/', async function (req, res) {
   //Write your code here
-    res.send(JSON.stringify(books,null,4));
+  const result = await new Promise ((resolve, reject) => {
+    resolve(books)
+  })
+  res.send(JSON.stringify(result,null,4));
 });
 
 // Get book details based on ISBN
-public_users.get('/isbn/:isbn',function (req, res) {
+public_users.get('/isbn/:isbn', async function (req, res) {
   //Write your code here
-  return res.status(200).send(JSON.stringify(books[req.params.isbn], null, 4));
+  const result = await new Promise ((resolve, reject) => {
+    resolve(books[req.params.isbn])
+  })
+  return res.status(200).send(JSON.stringify(result, null, 4));
  });
-  
+
 // Get book details based on author
-public_users.get('/author/:author',function (req, res) {
+public_users.get('/author/:author', async function (req, res) {
   //Write your code here
-  const result = []
-  for (let i in books) {
-      if (books[i].author === req.params.author) result.push(books[i])
-  }
-  return res.status(200).send(JSON.stringify({booksbyauthor: result}, null, 4));
+  const booksbyauthor = await new Promise ((resolve, reject) => {
+    const result = []
+    for (let i in books) {
+        if (books[i].author === req.params.author) result.push(books[i])
+    }
+    resolve(result)
+  })
+  return res.status(200).send(JSON.stringify({booksbyauthor: booksbyauthor}, null, 4));
 });
 
 // Get all books based on title
-public_users.get('/title/:title',function (req, res) {
+public_users.get('/title/:title', async function (req, res) {
   //Write your code here
-  const result = []
-  for (let i in books) {
-      if (books[i].title === req.params.title) result.push(books[i])
-  }
-  return res.status(200).send(JSON.stringify({booksbytitle: result}, null, 4));
+  const booksbytitle = await new Promise ((resolve, reject) => {
+    const result = []
+    for (let i in books) {
+        if (books[i].title === req.params.title) result.push(books[i])
+    }
+    resolve(result)
+  })
+  return res.status(200).send(JSON.stringify({booksbytitle: booksbytitle}, null, 4));
 });
 
 //  Get book review
